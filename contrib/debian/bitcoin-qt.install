@@ -1,0 +1,6 @@
+usr/local/bin/tcccoin-qt usr/bin
+share/pixmaps/tcccoin32.xpm usr/share/pixmaps
+share/pixmaps/tcccoin16.xpm usr/share/pixmaps
+share/pixmaps/tcccoin128.png usr/share/pixmaps
+debian/tcccoin-qt.desktop usr/share/applications
+debian/tcccoin-qt.protocol usr/share/kde4/services/

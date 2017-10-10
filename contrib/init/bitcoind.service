@@ -1,0 +1,22 @@
+[Unit]
+Description=tcccoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=tcccoin
+Group=tcccoin
+
+Type=forking
+PIDFile=/var/lib/tcccoind/tcccoind.pid
+ExecStart=/usr/bin/tcccoind -daemon -pid=/var/lib/tcccoind/tcccoind.pid \
+-conf=/etc/tcccoin/tcccoin.conf -datadir=/var/lib/tcccoind -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

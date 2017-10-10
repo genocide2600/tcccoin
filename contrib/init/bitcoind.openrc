@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/tcccoin/.tcccoin" ]; then
+	tcccoinD_DEFAULT_DATADIR="/var/lib/tcccoin/.tcccoin"
+else
+	tcccoinD_DEFAULT_DATADIR="/var/lib/tcccoind"
+fi
+
+tcccoinD_CONFIGFILE=${tcccoinD_CONFIGFILE:-/etc/tcccoin/tcccoin.conf}
+tcccoinD_PIDDIR=${tcccoinD_PIDDIR:-/var/run/tcccoind}
+tcccoinD_PIDFILE=${tcccoinD_PIDFILE:-${tcccoinD_PIDDIR}/tcccoind.pid}
+tcccoinD_DATADIR=${tcccoinD_DATADIR:-${tcccoinD_DEFAULT_DATADIR}}
+tcccoinD_USER=${tcccoinD_USER:-${tcccoin_USER:-tcccoin}}
+tcccoinD_GROUP=${tcccoinD_GROUP:-tcccoin}
+tcccoinD_BIN=${tcccoinD_BIN:-/usr/bin/tcccoind}
+tcccoinD_NICE=${tcccoinD_NICE:-${NICELEVEL:-0}}
+tcccoinD_OPTS="${tcccoinD_OPTS:-${tcccoin_OPTS}}"
+
+name="tcccoin Core Daemon"
+description="tcccoin cryptocurrency P2P network daemon"
+
+command="/usr/bin/tcccoind"
+command_args="-pid=\"${tcccoinD_PIDFILE}\" \
+		-conf=\"${tcccoinD_CONFIGFILE}\" \
+		-datadir=\"${tcccoinD_DATADIR}\" \
+		-daemon \
+		${tcccoinD_OPTS}"
+
+required_files="${tcccoinD_CONFIGFILE}"
+start_stop_daemon_args="-u ${tcccoinD_USER} \
+			-N ${tcccoinD_NICE} -w 2000"
+pidfile="${tcccoinD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${tcccoinD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${tcccoinD_USER}:${tcccoinD_GROUP}" \
+	"${tcccoinD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${tcccoinD_USER}:${tcccoinD_GROUP}" \
+	"${tcccoinD_PIDDIR}"
+
+	checkpath -f \
+	-o ${tcccoinD_USER}:${tcccoinD_GROUP} \
+	-m 0660 \
+	${tcccoinD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${tcccoinD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run tcccoind."
+		eerror "The setting must appear in ${tcccoinD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following "
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"tcccoin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

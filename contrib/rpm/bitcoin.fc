@@ -1,0 +1,8 @@
+/usr/bin/tcccoin-cli		--	gen_context(system_u:object_r:tcccoin_exec_t,s0)
+/usr/sbin/tcccoind		--	gen_context(system_u:object_r:tcccoin_exec_t,s0)
+/usr/lib(64)?/tcccoin/tcccoind		--	gen_context(system_u:object_r:tcccoin_exec_t,s0)
+
+/etc/tcccoin(/.*)?		gen_context(system_u:object_r:tcccoin_conf_t,s0)
+/var/lib/tcccoin(/.*)?		gen_context(system_u:object_r:tcccoin_var_lib_t,s0)
+
+(/var)?/run/tcccoind(/.*)?   gen_context(system_u:object_r:tcccoin_var_run_t,s0)

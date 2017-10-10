@@ -1,0 +1,33 @@
+# /etc/conf.d/tcccoind: config file for /etc/init.d/tcccoind
+
+# Config file location
+#tcccoinD_CONFIGFILE="/etc/tcccoin/tcccoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $tcccoinD_USER)
+#tcccoinD_PIDDIR="/var/run/tcccoind"
+
+# What filename to give the pidfile
+#tcccoinD_PIDFILE="${tcccoinD_PIDDIR}/tcccoind.pid"
+
+# Where to write tcccoind data (be mindful that the blockchain is large)
+#tcccoinD_DATADIR="/var/lib/tcccoind"
+
+# User and group to own tcccoind process
+#tcccoinD_USER="tcccoin"
+#tcccoinD_GROUP="tcccoin"
+
+# Path to tcccoind executable
+#tcccoinD_BIN="/usr/bin/tcccoind"
+
+# Nice value to run tcccoind under
+#tcccoinD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#tcccoinD_OPTS=""
+
+# The timeout in seconds OpenRC will wait for tcccoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+tcccoinD_SIGTERM_TIMEOUT=60

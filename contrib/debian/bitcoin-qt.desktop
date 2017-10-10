@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=tcccoin Core
+Comment=Connect to the tcccoin P2P Network
+Comment[de]=Verbinde mit dem tcccoin peer-to-peer Netzwerk
+Comment[fr]=tcccoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=tcccoin, eşten eşe kriptografik sanal para birimi
+Exec=tcccoin-qt %u
+Terminal=false
+Type=Application
+Icon=tcccoin128
+MimeType=x-scheme-handler/tcccoin;
+Categories=Office;Finance;
